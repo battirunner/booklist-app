@@ -1,19 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookListController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('/home', [BookListController::class, 'index'])->name('home.content');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/addbooklist', [BookListController::class, 'create'])->name('booklist.add');
+
+Route::post('/editbooklist', [BookListController::class, 'update'])->name('booklist.edit');
+
+Route::post('/deletebooklist', [BookListController::class, 'delete'])->name('booklist.delete');
