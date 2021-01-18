@@ -3,6 +3,8 @@ import './App.css';
 import BookTable from './components/tables/BookTable'
 import AddBookForm from './components/forms/AddBookForm'
 import EditBookForm from './components/forms/EditBookForm'
+import Confirmation from './components/notifications/ConfirmationModal'
+import Error from './components/notifications/ErrorModal'
 import axios from 'axios';
 
 function App() {
@@ -18,7 +20,7 @@ function App() {
 
       }).catch( err => {
         console.log(err)
-
+        setErrorStatus(true)
       })
     }, [])
     
@@ -31,6 +33,8 @@ function App() {
 
   const deleteBook = (id) => {
     console.log(id)
+    setDeleteId(id)
+    setDeleteConfirm(true)
   }
 
   const sortByValue = (value,order) => {
@@ -43,17 +47,34 @@ function App() {
 
       }).catch( err => {
         console.log(err)
-
+        setErrorStatus(true)
       })
   }
 
+  const closeModal = (status) => {
+    setDeleteConfirm(false)
+  }
+  const closeError = () => {
+    setErrorStatus(false)
+  }
   
   
   const [editing, setEditing] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [errorStatus, setErrorStatus] = useState(false)
+  const [deleteId, setDeleteId] = useState([])
   const [exportList, setExportList] = useState([])
   const initialFormState = { id: null, title: '', author: '' }
   const [currentBook, setCurrentBook] = useState(initialFormState)
+  const [responseMessage, setResponseMessage] = useState([])
+  const [validationmessage, setValidationMessage] = useState([])
   
+  const setErrorModalStatus = (status) => {
+    setErrorStatus(status)
+  } 
+  const setErrorModalMessage = (message) => {
+    setResponseMessage(message)
+  } 
   const editRow = (book) => {
     setEditing(true)
     setCurrentBook({ id: book.id, title: book.title, author: book.author })
@@ -64,6 +85,25 @@ function App() {
     setBooks(books.map((book) => (book.id === id ? updatedBook : book)))
   }
 
+  const confirmdelete = (id) => {
+    console.log(id)
+    axios
+        .post("/api/deletebooklist", {id})
+        .then(res => {
+            console.log(res.data);
+            setDeleteConfirm(false)
+            setErrorModalStatus(true)
+            setErrorModalMessage(['Deleted',res.data.message])
+            
+        })
+        .catch(err => {
+            console.log(err);
+            setErrorModalStatus(true)
+            setErrorModalMessage(['Error',res.data.message])
+        });
+
+        setBooks(books.filter((book) => book.id !== id))
+  }
 
   return (
     <div className='main-area px-4'>
@@ -80,10 +120,13 @@ function App() {
             </div>
           ) : (
             <div>
-              <AddBookForm addBook={addBook}/>
+              <AddBookForm addBook={addBook} showModal={setErrorModalStatus} modalMessage = {setErrorModalMessage} validation={validationmessage}/>
             </div>
           )}
-        <BookTable books={books} editRow={editRow} deleteBook={deleteBook} sortRow={sortByValue} export={setExportList} exportValue={exportList} />        
+        <BookTable books={books} editRow={editRow} deleteBook={deleteBook} sortRow={sortByValue} export={setExportList} exportValue={exportList} showModal={setErrorModalStatus} modalMessage = {setErrorModalMessage} />
+        <Confirmation show={deleteConfirm} deleteId={deleteId} confirmdelete={confirmdelete} close={closeModal}/>
+        <Error show={errorStatus} message={responseMessage} close={closeError}/>
+        
     </div>
   );
 }

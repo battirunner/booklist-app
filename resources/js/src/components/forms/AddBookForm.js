@@ -16,18 +16,32 @@ const AddBookForm = (props) => {
             <form className='todo-form bg-gray-100 p-8 w-full' onSubmit={event => {
                     event.preventDefault()
                     if (!book.title || !book.author)
+                    {
+                        props.showModal(true)
+                        if(!book.title && !book.author)
+                            props.modalMessage(['Error','Please Enter Book Title and Author'])
+                        else if(!book.author) 
+                        props.modalMessage(['Error','Please Enter Book Author'])
+                        else if(!book.title)
+                        props.modalMessage(['Error','Please Enter Book Title'])
+
                         return
-         
+                    } 
 
                     axios
                     .post("/api/addbooklist", book)
                     .then(res => {
                         console.log(res.data,res.data.id)
-                        props.addBook(book,res.data.id)
+                        const id = res.data.id
+                        props.addBook(book,id)
+                        props.showModal(true)
+                        props.modalMessage(['Added',res.data.message])
                         setBook(initialFormState)
                     })
                     .catch(err => {
                         console.log(err.response);
+                        props.showModal(true)
+                        props.modalMessage(['Error',err.response.data['message']])
                     });
 
                     

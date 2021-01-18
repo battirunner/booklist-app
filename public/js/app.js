@@ -1908,8 +1908,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_tables_BookTable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/tables/BookTable */ "./resources/js/src/components/tables/BookTable.js");
 /* harmony import */ var _components_forms_AddBookForm__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/forms/AddBookForm */ "./resources/js/src/components/forms/AddBookForm.js");
 /* harmony import */ var _components_forms_EditBookForm__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/forms/EditBookForm */ "./resources/js/src/components/forms/EditBookForm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _components_notifications_ConfirmationModal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/notifications/ConfirmationModal */ "./resources/js/src/components/notifications/ConfirmationModal.js");
+/* harmony import */ var _components_notifications_ErrorModal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/notifications/ErrorModal */ "./resources/js/src/components/notifications/ErrorModal.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_8__);
 
 
 
@@ -1940,6 +1942,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
+
 function App() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -1947,10 +1951,11 @@ function App() {
       setBooks = _useState2[1];
 
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
-    axios__WEBPACK_IMPORTED_MODULE_6___default().get('/api/home').then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_8___default().get('/api/home').then(function (res) {
       setBooks(res.data);
     })["catch"](function (err) {
       console.log(err);
+      setErrorStatus(true);
     });
   }, []);
 
@@ -1962,15 +1967,26 @@ function App() {
 
   var deleteBook = function deleteBook(id) {
     console.log(id);
+    setDeleteId(id);
+    setDeleteConfirm(true);
   };
 
   var sortByValue = function sortByValue(value, order) {
-    axios__WEBPACK_IMPORTED_MODULE_6___default().get('/api/home?sort=' + value + '&order=' + order).then(function (res) {
+    axios__WEBPACK_IMPORTED_MODULE_8___default().get('/api/home?sort=' + value + '&order=' + order).then(function (res) {
       console.log(res.data);
       setBooks(res.data);
     })["catch"](function (err) {
       console.log(err);
+      setErrorStatus(true);
     });
+  };
+
+  var closeModal = function closeModal(status) {
+    setDeleteConfirm(false);
+  };
+
+  var closeError = function closeError() {
+    setErrorStatus(false);
   };
 
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
@@ -1978,10 +1994,25 @@ function App() {
       editing = _useState4[0],
       setEditing = _useState4[1];
 
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
       _useState6 = _slicedToArray(_useState5, 2),
-      exportList = _useState6[0],
-      setExportList = _useState6[1];
+      deleteConfirm = _useState6[0],
+      setDeleteConfirm = _useState6[1];
+
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      errorStatus = _useState8[0],
+      setErrorStatus = _useState8[1];
+
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState10 = _slicedToArray(_useState9, 2),
+      deleteId = _useState10[0],
+      setDeleteId = _useState10[1];
+
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState12 = _slicedToArray(_useState11, 2),
+      exportList = _useState12[0],
+      setExportList = _useState12[1];
 
   var initialFormState = {
     id: null,
@@ -1989,10 +2020,28 @@ function App() {
     author: ''
   };
 
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(initialFormState),
-      _useState8 = _slicedToArray(_useState7, 2),
-      currentBook = _useState8[0],
-      setCurrentBook = _useState8[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(initialFormState),
+      _useState14 = _slicedToArray(_useState13, 2),
+      currentBook = _useState14[0],
+      setCurrentBook = _useState14[1];
+
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState16 = _slicedToArray(_useState15, 2),
+      responseMessage = _useState16[0],
+      setResponseMessage = _useState16[1];
+
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState18 = _slicedToArray(_useState17, 2),
+      validationmessage = _useState18[0],
+      setValidationMessage = _useState18[1];
+
+  var setErrorModalStatus = function setErrorModalStatus(status) {
+    setErrorStatus(status);
+  };
+
+  var setErrorModalMessage = function setErrorModalMessage(message) {
+    setResponseMessage(message);
+  };
 
   var editRow = function editRow(book) {
     setEditing(true);
@@ -2007,6 +2056,25 @@ function App() {
     setEditing(false);
     setBooks(books.map(function (book) {
       return book.id === id ? updatedBook : book;
+    }));
+  };
+
+  var confirmdelete = function confirmdelete(id) {
+    console.log(id);
+    axios__WEBPACK_IMPORTED_MODULE_8___default().post("/api/deletebooklist", {
+      id: id
+    }).then(function (res) {
+      console.log(res.data);
+      setDeleteConfirm(false);
+      setErrorModalStatus(true);
+      setErrorModalMessage(['Deleted', res.data.message]);
+    })["catch"](function (err) {
+      console.log(err);
+      setErrorModalStatus(true);
+      setErrorModalMessage(['Error', res.data.message]);
+    });
+    setBooks(books.filter(function (book) {
+      return book.id !== id;
     }));
   };
 
@@ -2025,7 +2093,10 @@ function App() {
       })
     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_forms_AddBookForm__WEBPACK_IMPORTED_MODULE_4__.default, {
-        addBook: addBook
+        addBook: addBook,
+        showModal: setErrorModalStatus,
+        modalMessage: setErrorModalMessage,
+        validation: validationmessage
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_tables_BookTable__WEBPACK_IMPORTED_MODULE_3__.default, {
       books: books,
@@ -2033,7 +2104,18 @@ function App() {
       deleteBook: deleteBook,
       sortRow: sortByValue,
       "export": setExportList,
-      exportValue: exportList
+      exportValue: exportList,
+      showModal: setErrorModalStatus,
+      modalMessage: setErrorModalMessage
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_notifications_ConfirmationModal__WEBPACK_IMPORTED_MODULE_6__.default, {
+      show: deleteConfirm,
+      deleteId: deleteId,
+      confirmdelete: confirmdelete,
+      close: closeModal
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_notifications_ErrorModal__WEBPACK_IMPORTED_MODULE_7__.default, {
+      show: errorStatus,
+      message: responseMessage,
+      close: closeError
     })]
   });
 }
@@ -2105,13 +2187,24 @@ var AddBookForm = function AddBookForm(props) {
         className: "todo-form bg-gray-100 p-8 w-full",
         onSubmit: function onSubmit(event) {
           event.preventDefault();
-          if (!book.title || !book.author) return;
+
+          if (!book.title || !book.author) {
+            props.showModal(true);
+            if (!book.title && !book.author) props.modalMessage(['Error', 'Please Enter Book Title and Author']);else if (!book.author) props.modalMessage(['Error', 'Please Enter Book Author']);else if (!book.title) props.modalMessage(['Error', 'Please Enter Book Title']);
+            return;
+          }
+
           axios.post("/api/addbooklist", book).then(function (res) {
             console.log(res.data, res.data.id);
-            props.addBook(book, res.data.id);
+            var id = res.data.id;
+            props.addBook(book, id);
+            props.showModal(true);
+            props.modalMessage(['Added', res.data.message]);
             setBook(initialFormState);
           })["catch"](function (err) {
             console.log(err.response);
+            props.showModal(true);
+            props.modalMessage(['Error', err.response.data['message']]);
           });
         },
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
@@ -2226,8 +2319,12 @@ var EditBookForm = function EditBookForm(props) {
           event.preventDefault();
           axios.post("/api/editbooklist", book).then(function (res) {
             console.log(res.data);
+            props.showModal(true);
+            props.modalMessage(['Updated', res.data.message]);
           })["catch"](function (err) {
             console.log(err);
+            props.showModal(true);
+            props.modalMessage(['Error', err.response.data['message']]);
           });
           props.updateBook(book.id, book);
         },
@@ -2286,6 +2383,110 @@ var EditBookForm = function EditBookForm(props) {
 };
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (EditBookForm);
+
+/***/ }),
+
+/***/ "./resources/js/src/components/notifications/ConfirmationModal.js":
+/*!************************************************************************!*\
+  !*** ./resources/js/src/components/notifications/ConfirmationModal.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+
+
+var ConfirmationModal = function ConfirmationModal(props) {
+  // Render nothing if the "show" prop is false
+  if (!props.show) {
+    return null;
+  }
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    className: "form-modal",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "notification-modal bg-gray-100",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        className: "modal-content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
+          className: "text-3xl",
+          children: "Are you sure?"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
+        onClick: function onClick() {
+          props.confirmdelete(props.deleteId);
+        },
+        className: "notification-btn bg-red-500 text-white",
+        children: "Yes"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
+        onClick: function onClick() {
+          props.close(false);
+        },
+        className: "notification-btn bg-blue-500 text-white",
+        children: "Cancel"
+      })]
+    })
+  });
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ConfirmationModal);
+
+/***/ }),
+
+/***/ "./resources/js/src/components/notifications/ErrorModal.js":
+/*!*****************************************************************!*\
+  !*** ./resources/js/src/components/notifications/ErrorModal.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+
+
+var ErrorModal = function ErrorModal(props) {
+  // Render nothing if the "show" prop is false
+  if (!props.show) {
+    return null;
+  }
+
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+    className: "form-modal",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "notification-modal bg-gray-100",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("div", {
+        className: "modal-content",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h2", {
+          className: "text-3xl",
+          children: props.message[0]
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("p", {
+        children: props.message[1]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
+        onClick: function onClick() {
+          props.close();
+        },
+        className: "notification-btn bg-blue-500 text-white",
+        children: "Close"
+      })]
+    })
+  });
+};
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ErrorModal);
 
 /***/ }),
 
