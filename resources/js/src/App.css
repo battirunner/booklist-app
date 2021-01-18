@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,600&display=swap');
+
+*,
+body {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    font-size: 1rem;
+}
+.table tbody tr:not(:last-child) {
+    border-bottom: 1px solid gray;
+}
+.notification-modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    width: 20rem;
+    height: 10rem;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    color: black;
+    border-radius: .4rem;
+    text-align: center;
+    z-index: 999;
+}
+
+.notification-btn {
+    padding: .3rem 1rem;
+    margin: 2rem;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: transparent;
+    background-clip: padding-box;
+    border-radius: 0.3rem;
+    outline: 0;
+  }
