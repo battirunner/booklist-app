@@ -31,7 +31,6 @@ const AddBookForm = (props) => {
                     axios
                     .post("/api/addbooklist", book)
                     .then(res => {
-                        console.log(res.data,res.data.id)
                         const id = res.data.id
                         props.addBook(book,id)
                         props.showModal(true)
@@ -39,7 +38,6 @@ const AddBookForm = (props) => {
                         setBook(initialFormState)
                     })
                     .catch(err => {
-                        console.log(err.response);
                         props.showModal(true)
                         props.modalMessage(['Error',err.response.data['message']])
                     });

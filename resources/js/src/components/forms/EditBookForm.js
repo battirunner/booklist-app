@@ -24,12 +24,10 @@ const EditBookForm = (props) => {
                     axios
                     .post("/api/editbooklist", book)
                     .then(res => {
-                        console.log(res.data);
                         props.showModal(true)
                         props.modalMessage(['Updated',res.data.message])
                     })
                     .catch(err => {
-                        console.log(err);
                         props.showModal(true)
                         props.modalMessage(['Error',err.response.data['message']])
                     });

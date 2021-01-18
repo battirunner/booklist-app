@@ -19,7 +19,6 @@ function App() {
         setBooks(res.data)
 
       }).catch( err => {
-        console.log(err)
         setErrorStatus(true)
       })
     }, [])
@@ -27,12 +26,10 @@ function App() {
 
   const addBook = (book,id) => {
     book.id = id
-    console.log(book.id)
     setBooks([...books, book])
   }
 
   const deleteBook = (id) => {
-    console.log(id)
     setDeleteId(id)
     setDeleteConfirm(true)
   }
@@ -42,11 +39,9 @@ function App() {
     
     axios.get('/api/home?sort='+value+'&order='+order)
       .then( res => {
-        console.log(res.data)
         setBooks(res.data)
 
       }).catch( err => {
-        console.log(err)
         setErrorStatus(true)
       })
   }
@@ -86,18 +81,15 @@ function App() {
   }
 
   const confirmdelete = (id) => {
-    console.log(id)
     axios
         .post("/api/deletebooklist", {id})
         .then(res => {
-            console.log(res.data);
             setDeleteConfirm(false)
             setErrorModalStatus(true)
             setErrorModalMessage(['Deleted',res.data.message])
             
         })
         .catch(err => {
-            console.log(err);
             setErrorModalStatus(true)
             setErrorModalMessage(['Error',res.data.message])
         });
