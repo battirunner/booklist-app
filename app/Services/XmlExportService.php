@@ -22,16 +22,18 @@ class XmlExportService
         foreach($collections as $collection)
         {
             if($collectionType == 'titleandauthor')
-                $row = ['title' => $collection->title, 'author' => $collection->author];
+                $row = ['id'=>$collection->id, 'title' => $collection->title, 'author' => $collection->author];
             elseif($collectionType == 'title')
-                $row = ['title' => $collection->title];
+                $row = ['id'=>$collection->id, 'title' => $collection->title];
             elseif($collectionType == 'author')
-                $row = ['author' => $collection->author];
+                $row = ['id'=>$collection->id,'author' => $collection->author];
 
-            $array['Row-ID:'.$collection->id] = $row;
+            $array[] = $row;
         }
+        $result = [];
+        $result['Books'] =  $array;
 
-        return $array;
+        return $result;
     }
 
 

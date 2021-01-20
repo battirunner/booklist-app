@@ -18,7 +18,7 @@ class BookListController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->sort)
+        if($request->sort && ($request->order == 'asc' || $request->order == 'desc'))
         {
             if($request->sort == 'title')
                 return Book::orderBy('title',$request->order)->get();
