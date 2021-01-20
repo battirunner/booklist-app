@@ -12,16 +12,6 @@
     ○ Edit book information in the list <br>
     ○ Delete book information in the list <br>    
 ● Incomplete entry like only title or author or duplicate is prevented. <br>
-● Please do not use WordPress - we love WordPress too, but it’s not what we’re looking
-for here (not MVC).<br>
-● Use a popular frontend framework/library (React, Vue, Angular, Backbone, Knockout) to
-build one responsive page served by the above MVC framework. <br>
-● The page can be very simple or fancy, but should be responsive.<br>
-● Use a docker-based environment to run it all:<br>
-    ○  You can use Docker images from hub.docker.com or build your own<br>
-    ○ Include a Dockerfile if you build your own<br>
-    ○ Use docker-compose.yml if your application has multiple pieces (e.g. web +
-database) (not required)<br>
 
 ## Project Architecture
 ● Backend by Laravel MVC framework serving API response.<br>
@@ -183,7 +173,12 @@ $ copy the above code
 RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 ```
-
+$ sudo a2ensite booklist.conf
+$ sudo systemctl restart apache2
+$ cd /etc/hosts
+$ add 127.0.0.1 your domain at end of the file
+$ exit and save
+$ sudo systemctl restart apache2
 $ install letsencrypt(or other certbot application for https:\\)
 $ run letsencrypt
 $ follow letsencrypt options for make domain with secure access (https:\\)
