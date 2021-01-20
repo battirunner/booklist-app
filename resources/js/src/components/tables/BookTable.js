@@ -44,16 +44,16 @@ const BookTable = (props) => {
   
             }
             }}>
-            <select className="mx-1" defaultValue={fileType} onChange={handleFileTypeInput}>
+            <select className="mx-1 border border-gray-500" defaultValue={fileType} onChange={handleFileTypeInput}>
               <option value="CSV">CSV</option>
               <option value="XML">XML</option>
             </select>
-            <select className="mx-1" defaultValue={exportType} onChange={handleExportTypeInput}>
+            <select className="mx-1 border border-gray-500" defaultValue={exportType} onChange={handleExportTypeInput}>
               <option value="titleandauthor">Title and Author</option>
               <option value="title">Title</option>
               <option value="author">Author</option>
             </select> 
-            <button className='bg-blue-600 text-white py-1 px-2 mt-6 ml-40 rounded'>
+            <button className='bg-blue-600 text-white py-1 px-2 mt-6 ml-5 rounded'>
               Download
             </button>
           </form>

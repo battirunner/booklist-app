@@ -65,13 +65,13 @@ const EditBookForm = (props) => {
                     />
                 </div>
 
-                <div className='border-t mt-12'>
-                    <button className='bg-yellow-400 text-black py-1 px-2 mt-6 ml-40 rounded'>
+                <div className='md:block flex border-t mt-12'>
+                    <button className='bg-yellow-400 text-black py-1 px-2 mt-6 ml-12 md:ml-40 rounded'>
                         Update Book
                     </button>
                     <button
                         onClick={() => props.setEditing(false)}
-                        className="bg-blue-600 text-white py-1 px-2 mt-6 ml-40 rounded"
+                        className="bg-blue-600 text-white py-1 px-2 mt-6 ml-12 md:ml-40 rounded"
                     >
                         Cancel
                     </button>

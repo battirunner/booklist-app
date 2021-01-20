@@ -1,62 +1,192 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+# Booklist-Apps
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+##### Application is hosted on https://booklist.mohip.dev
+##### Goal: This application is a demostration of CRUD for Book List Entry. User can
+##### manage book information with title and author with CRUD functionality addiotional file export and sorted booklist.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## User Feature
+● User can 
+    ○ Add book in list by title and author<br>
+    ○ Edit book information in the list <br>
+    ○ Delete book information in the list <br>    
+● Incomplete entry like only title or author or duplicate is prevented. <br>
+● Please do not use WordPress - we love WordPress too, but it’s not what we’re looking
+for here (not MVC).<br>
+● Use a popular frontend framework/library (React, Vue, Angular, Backbone, Knockout) to
+build one responsive page served by the above MVC framework. <br>
+● The page can be very simple or fancy, but should be responsive.<br>
+● Use a docker-based environment to run it all:<br>
+    ○  You can use Docker images from hub.docker.com or build your own<br>
+    ○ Include a Dockerfile if you build your own<br>
+    ○ Use docker-compose.yml if your application has multiple pieces (e.g. web +
+database) (not required)<br>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Project Architecture
+● Backend by Laravel MVC framework serving API response.<br>
+● Front end build by React JS and request GET and POST data to Backend through API.<br>
+● Mysql for Database end, Connected to Laravel Application.<br>
 
-## Learning Laravel
+1. For the frontend React Component all the data fetch or post via api to Backend and backend to database.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    | Name | Endpoint | Request |
+    |--------------|------------------|----------------------|
+    | home | https://booklist.mohip.dev/api/home | GET |
+    | addbooklist | https://booklist.mohip.dev/api/addbooklist | POST |
+    | editbooklist | https://booklist.mohip.dev/api/editbooklist | POST |
+    | deletebooklist | https://booklist.mohip.dev/api/deletebooklist | POST |
+    | exportcsv | https://booklist.mohip.dev/api/exportcsv | POST |
+    | exportxml | https://booklist.mohip.dev/api/exportxml | POST |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. With parameter
 
-## Laravel Sponsors
+    | Name | Endpoint | Parameter | Value |
+    |--------------|------------------|----------------------|----------------------|
+    | home | https://booklist.mohip.dev/api/home | sort | 'title' or 'author'
+    | home | https://booklist.mohip.dev/api/home | order | 'asc' or 'desc'
+     
+    
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Application Code base Architecture
+### Backend - Laravel & Mysql
+● Controller
+    ○ HomeController for home route request and return 'app' view<br>
+    ○ BookListController for all CRUD request and execute the logic and DB query by Using Service Class<br>
+    ○ ExportController for file export request, generate content based on file type and content type and response with downloaded file.<br>
+● Service Class <br>
+This is for separate db query and business logic from directly execute in Controller<br>
+    ○ App\Services\BookListService for all CRUD functionality DB operation and return response to BookController. <br>
+    ○ App\Services\XmlExportService for generate the xml formate from db collection and return to ExportController.<br>
+● Export Class <br>
+This is for provide collection as class instance for Exporting files in formate <br>
+    ○ BookExport is generated by laravel export class command, this is for return collection to convert to csv formate to ExportController. <br>
+    ○ Use dependency injection when pass $request as parameter to create BookExport instance. <br>
+##### Addtional 3rd party Laravel Library class https://github.com/spatie/array-to-xml & https://github.com/Maatwebsite/Laravel-Excel for csv and xml export helper.
+● Route files <br>
+    ○ web.php only hold intial route {?path} that confirm passing any request to api.php
+    ○ api.php contain all routes
+● Test Class <br>
+This is for testing all controller function proper functionality and prevent error and unexpected responses. <br>
+    ○ Use Feature test by using testcase classes in tests\Feaeture. <br>
+    ○ Test for CRUD functionality using <br>
+        -> AddBooksTest <br>
+        -> BookListTest <br>
+        -> DeleteBooksTest <br>
+        -> BookUpdateTest <br>
+● Model and Migration <br>
+Databse table model for application layer to database <br>
+    ○ 'books' table is the only table for application. Necessary Migration and Book model used. <br>
+    ○ 'failed_jobs' is default table by laravel by default migration(other default migrations are removed). <br>
+● View <br>
+View file for fronend render
+    ○ Use React Js for managing front end, app.blade is the initial view file to generate react component based on redering on app view file.
+    ○ As in the same repository, react components are in /resources/js/src.
+    ○ Application front renderd based on React dev environment generated /public/app.js and public/app.css.
 
-### Premium Partners
+### Fronend End - React JS
+#### Componentes
+● Index JS
+    ○ In resources/js/src folder. Intial root component of React app.
+    ○ Initialize application by loading the necessary react imports and render on app.blade in Laravel View <br>
+    ○ Add App JS component that is the whole wrap of applications.<br>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+● App JS
+    ○ In resources/js/sr. Wrap up all other React component used in the system and import necesarry imports. <br>
+    ○ Contain necessary API data fetch and dynamic render page for initial functionality of page and dependent value and properties with other components<br>
+● BookTable JS
+    ○ In resources/js/src/tables. Initialize and render the List of Books table that show all book from the database with Edit and delete button <br>
+    ○ render 'FileDownload' component directly from 'js-file-download' <br>
+● AddBookForm JS
+    ○ In resources/js/src/forms. Initialize and render the the form for entering the new book title and author and submit to add in the bookliist <br>
+    ○ Check for validation and throw property value to other component for error message. <br>
+● EditBookForm JS
+    ○ In resources/js/src/forms. Initialize and render the the form for update the existing book title and author information and submit to edit the bookliist <br>
+    ○ Check for validation and throw property value to other component for error message. <br>
+● ConfirmationModal JS
+    ○ In resources/js/src/notification. Initialize and render the the modal with confirm button when any book form list is selected for being deleted <br>
+    ○ Check for confirm and show delete success of cancel. <br>
+● ErrorModal JS
+    ○ In resources/js/src/notification. Initialize and render the the modal that show any response error message also success message based on response <br>
+    ○ Check for the the proper response and property values <br>
 
-## Contributing
+#### Front End web page design is mostly based on TailwindCss (https://tailwindcss.com/) and /resources/js/src/App.css.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+### Dev Requirements
+● PHP 7.3.10
+● Composer version 1.9.0<br>
+● npm v6.14.4<br>
+● node v12.16.3<br>
+● Laravel Framework 8.21.0<br>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+### Deploy and Run (development environment)
+```
+$ git clone https://github.com/battirunner/booklist-app.git
+$ cd booklist-app
+$ composer install
+$ npm install
+$ npm run dev
+$ cp .env.example .env
+$ php artisan key:generate
+$ mysql -u [USER] -p
+$ create database [DATABASE];
+$ Add information of Database at .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+ DB_CONNECTION=mysql
+ DB_HOST=127.0.0.1
+ DB_PORT=3306
+ DB_USERNAME=[USER]
+ DB_PASSWORD=[PASSWORD]
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+$ if in Linux then set permission as -R 777 in /public and /storage folder 
+$ ./vendor/bin/phpunit
+$ Check APACHE and Mysql server is running.
+$ php artisan migrate
+$ php artisan serve
+$ application live at http://127.0.0.1:8000 or http://localhost:8000
+
+```
+### Deploy and Run (Live environment, Ubuntu Server)
+#### This is deployed in live server using a https://www.digitalocean.com/ ubuntu droplet, all procedure are same except below,
+```
+$ cd /var/www/html
+$ git clone https://github.com/battirunner/booklist-app.git
+```
+#### all other same as (development environment) up to
+```
+$ php artisan migrate
+$ cd /etc/apache2/sites-available 
+$ touch booklist.conf
+$ copy the above code
+```
+```
+ This is for specific domain, replace yourdomain with real domain
+ <VirtualHost *:80>
+  ServerAdmin admin@yourdomain
+     DocumentRoot /var/www/html/booklist-app/public
+     ServerName yourdomain
+     ServerAlias www.yourdomain
+
+    <Directory /var/www/html/booklist-app/public>
+        Options +FollowSymlinks
+        AllowOverride All
+        Require all granted
+     </Directory>
+
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+ RewriteEngine on
+ RewriteCond %{SERVER_NAME} =yourdomain
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
+</VirtualHost>
+```
+
+$ install letsencrypt(or other certbot application for https:\\)
+$ run letsencrypt
+$ follow letsencrypt options for make domain with secure access (https:\\)
+$ add nameserver information  of server hosting at domain hosting smanagement.(in this case ns1.digitalocean.com, ns2.digitalocean.com )  
+
+### Done, application is live!! at your domain.
